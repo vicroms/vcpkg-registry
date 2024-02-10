@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 env:
-  VCPKG_ASSET_SOURCES: "clear;x-azurl,https://vcpkgdemoassets.blob.core.windows.net/vcpkg-demo-assets,{{ secrets.ADO_SAS }},readwrite"
+  VCPKG_ASSET_SOURCES: "clear;x-azurl,https://vcpkgdemoassets.blob.core.windows.net/vcpkg-demo-assets,${{ secrets.ADO_SAS }},readwrite"
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
 
