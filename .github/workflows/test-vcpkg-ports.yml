@@ -35,7 +35,7 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Build ports
-      run: ${{ github.workspace }}/vcpkg/vcpkg install --no-binarycaching --debug-env
+      run: ${{ github.workspace }}/vcpkg/vcpkg install
       env:
         X_VCPKG_ASSET_SOURCES: "clear;x-azurl,https://vcpkgdemoassets.blob.core.windows.net/vcpkg-demo-assets,${{ secrets.ADO_SAS }},readwrite"
       shell: bash

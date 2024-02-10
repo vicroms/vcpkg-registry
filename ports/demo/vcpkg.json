@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "dependencies": [
     "fmt",
-    "zlib"
+    "zlib",
+    "cpprestsdk",
+    "rapidjson",
+    "sqlite3"
   ]
 }
