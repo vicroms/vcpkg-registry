@@ -36,5 +36,5 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Build ports
-      run: ${{ github.workspace }}/vcpkg/vcpkg install
+      run: ${{ github.workspace }}/vcpkg/vcpkg install --no-binarycaching --debug
       shell: bash
