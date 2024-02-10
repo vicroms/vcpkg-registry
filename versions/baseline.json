@@ -4,6 +4,10 @@
       "baseline": "1.0.0",
       "port-version": 0
     },
+    "demo": {
+      "baseline": "1.0.0",
+      "port-version": 0
+    },
     "fmt": {
       "baseline": "demo-10.0.0",
       "port-version": 0
