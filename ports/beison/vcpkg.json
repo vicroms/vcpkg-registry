@@ -1,9 +1,10 @@
 {
-  "name": "beicode",
-  "version": "1.0.0",
-  "description": "A simple utf-8 based unicode decoding and encoding library",
+  "name": "beison",
+  "version": "1.0.1",
+  "description": "A simple json parsing and stringifying library",
   "homepage": "https://github.com/Microsoft/vcpkg-docs",
   "dependencies": [
+    "beicode",
     {
       "name": "vcpkg-cmake",
       "host": true

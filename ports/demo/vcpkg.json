@@ -6,6 +6,8 @@
     "zlib",
     "cpprestsdk",
     "rapidjson",
-    "sqlite3"
+    "sqlite3",
+    "beicode",
+    "beison"
   ]
 }
