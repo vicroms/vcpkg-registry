@@ -6,9 +6,9 @@ on:
   pull_request:
     branches: ["main"]
 
-env:
-  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
-  VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
@@ -24,18 +24,31 @@ jobs:
         path: vcpkg
 
     - name: Bootstrap vcpkg
-      run: "${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh"
       shell: bash
+      run: "${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh"
 
-    - name: Enable GitHub Actions Cache backend
-      uses: actions/github-script@v7
-      with:
-        script: |
-          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+    - name: Add NuGet sources
+      shell: bash
+      env:
+        VCPKG_EXE: "${{ github.workspace }}/vcpkg/vcpkg"
+        FEED_URL: "https://nuget.pkg.github.com/vicroms/index.json"
+      run: |
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          sources add \
+          -Name "GitHubPackages" \
+          -Source "${{ env.FEED_URL }}" \
+          -UserName "vicroms" \
+          -Password "${{ secrets.GITHUB_TOKEN }}" \
+          -StorePasswordInClearText
+        if [[ "${{ github.event_name }}" == "push" ]]; then
+          mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+            setapikey "${{ secrets.GITHUB_TOKEN }}" \
+            -Source "${{ env.FEED_URL }}"
+        fi
 
     - name: Build ports
-      run: ${{ github.workspace }}/vcpkg/vcpkg install
-      env:
-        X_VCPKG_ASSET_SOURCES: "clear;x-azurl,https://vcpkgdemoassets.blob.core.windows.net/vcpkg-demo-assets,${{ secrets.ADO_SAS }},readwrite"
       shell: bash
+      env:
+        VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
+        VCPKG_BINARY_SOURCES: "${{ github.event_name == 'push' && 'clear;nuget,https://nuget.pkg.github.com/vicroms/index.json,readwrite' || 'clear;nuget,https://nuget.pkg.github.com/vicroms/index.json,read' }}"
+      run: ${{ github.workspace }}/vcpkg/vcpkg install
