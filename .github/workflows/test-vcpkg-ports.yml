@@ -44,10 +44,10 @@ jobs:
           -Name "GitHubPackages" \
           -Source "${{ env.FEED_URL }}" \
           -UserName "vicroms" \
-          -Password "${{ secrets.GITHUB_TOKEN }}" \
+          -Password "${{ secrets.PACKAGES_GITHUB_TOKEN }}" \
           -StorePasswordInClearText
         mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
-          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          setapikey "${{ secrets.PACKAGES_GITHUB_TOKEN }}" \
           -Source "${{ env.FEED_URL }}"
 
     - name: Build ports
