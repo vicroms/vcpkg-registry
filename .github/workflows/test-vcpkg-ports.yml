@@ -27,6 +27,12 @@ jobs:
       shell: bash
       run: "${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh"
 
+    - name: Install Mono
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mono-complete
+
     - name: Add NuGet sources
       shell: bash
       env:
@@ -40,15 +46,13 @@ jobs:
           -UserName "vicroms" \
           -Password "${{ secrets.GITHUB_TOKEN }}" \
           -StorePasswordInClearText
-        if [[ "${{ github.event_name }}" == "push" ]]; then
-          mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
-            setapikey "${{ secrets.GITHUB_TOKEN }}" \
-            -Source "${{ env.FEED_URL }}"
-        fi
+        mono `${{ env.VCPKG_EXE }} fetch nuget | tail -n 1` \
+          setapikey "${{ secrets.GITHUB_TOKEN }}" \
+          -Source "${{ env.FEED_URL }}"
 
     - name: Build ports
       shell: bash
       env:
         VCPKG_OVERLAY_PORTS: "${{ github.workspace }}/ports"
-        VCPKG_BINARY_SOURCES: "${{ github.event_name == 'push' && 'clear;nuget,https://nuget.pkg.github.com/vicroms/index.json,readwrite' || 'clear;nuget,https://nuget.pkg.github.com/vicroms/index.json,read' }}"
+        VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/vicroms/index.json,readwrite"
       run: ${{ github.workspace }}/vcpkg/vcpkg install
